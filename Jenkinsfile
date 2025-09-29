@@ -9,7 +9,8 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Installing dependencies...'
-                sh 'pip3 install -r requirements.txt'
+                // Use full path for pip3
+                sh '/usr/bin/pip3 install -r requirements.txt'
             }
         }
         stage('Test') {
