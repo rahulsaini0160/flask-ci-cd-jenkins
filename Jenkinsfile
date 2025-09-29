@@ -29,7 +29,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Deploying to staging...'
-                // Example deploy command (modify as needed):
                 sh 'echo Deployment step - customize this for your staging environment'
             }
         }
@@ -37,14 +36,26 @@ pipeline {
 
     post {
         success {
-            mail to: "${env.EMAIL_RECIPIENT}",
-                 subject: "Build Success: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "Jenkins build passed successfully."
+            script {
+                try {
+                    mail to: "${env.EMAIL_RECIPIENT}",
+                         subject: "Build Success: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                         body: "Jenkins build passed successfully."
+                } catch (err) {
+                    echo "Mail sending failed: ${err}"
+                }
+            }
         }
         failure {
-            mail to: "${env.EMAIL_RECIPIENT}",
-                 subject: "Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "Jenkins build failed. Please check the logs."
+            script {
+                try {
+                    mail to: "${env.EMAIL_RECIPIENT}",
+                         subject: "Build Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
+                         body: "Jenkins build failed. Please check the logs."
+                } catch (err) {
+                    echo "Mail sending failed: ${err}"
+                }
+            }
         }
     }
 }
