@@ -8,15 +8,22 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Installing dependencies...'
-                // Use full path for pip3
-                sh '/usr/bin/pip3 install -r requirements.txt'
+                echo 'Creating virtual environment and installing dependencies...'
+                sh '''
+                  python3 -m venv venv
+                  . venv/bin/activate
+                  pip install --upgrade pip
+                  pip install -r requirements.txt
+                '''
             }
         }
         stage('Test') {
             steps {
                 echo 'Running tests...'
-                sh 'pytest tests/'
+                sh '''
+                  . venv/bin/activate
+                  pytest tests/
+                '''
             }
         }
         stage('Deploy') {
